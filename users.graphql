@@ -12,13 +12,13 @@ type Query {
 type Mutation {
   createUser(input: CreateUserInput): User
   updateUser(id: ID!, input: UpdateUserInput): User
-  deleteUser(id: ID!): DeleteInput
+  deleteUser(id: ID!): DeleteItem
   createRole(input: CreateRoleInput): Role
   updateRole(id: ID!, input: UpdateRoleInput): Role
-  deleteRole(id: ID!): DeleteInput
+  deleteRole(id: ID!): DeleteItem
   createPermission(input: CreatePermissionInput): Permission
   updatePermission(id: ID!, input: UpdatePermissionInput): Permission
-  deletePermission(id: ID!): DeleteInput
+  deletePermission(id: ID!): DeleteItem
 }
 
 type Permission {
@@ -122,6 +122,6 @@ input UpdatePermissionInput {
   resource: String!
 }
 
-input DeleteInput {
-  success: Boolean
+type DeleteItem {
+  success: Boolean!
 }
