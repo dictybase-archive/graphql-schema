@@ -1,18 +1,21 @@
 type Query {
-  stock(id: ID!): Stock
-  listStocks(next_cursor: ID, limit: Int): StockListWithCursor
+  plasmid(id: ID!): Plasmid
+  strain(id: ID!): Stock
+  listStrains(cursor: ID, limit: Int, filter: String): StrainListWithCursor
+  listPlasmids(cursor: ID, limit: Int, filter: String): PlasmidListWithCursor
 }
 
 type Mutation {
-  createStrain(input: CreateStrainInput): Stock
-  createPlasmid(input: CreatePlasmidInput): Stock
-  updateStock(id: ID!, input: UpdateStockInput): Stock
+  createStrain(input: CreateStrainInput): Strain
+  createPlasmid(input: CreatePlasmidInput): Plasmid
+  updateStrain(id: ID!, input: UpdateStrainInput): Strain
+  updatePlasmid(id: ID!, input: UpdatePlasmidInput): Plasmid
   deleteStock(id: ID!): DeleteItem
 }
 
 scalar Timestamp
 
-type Stock {
+type Strain {
   id: ID!
   created_at: Timestamp!
   updated_at: Timestamp!
@@ -24,26 +27,63 @@ type Stock {
   genes: [String]
   dbxrefs: [String]
   publications: [String]
-  strain_properties: StrainProperties
-  plasmid_properties: PlasmidProperties
-}
-
-type StrainProperties {
+  # from strain_properties
   systematic_name: String!
   descriptor: String!
   species: String!
   plasmid: String
-  parents: [String]
+  parent: String
   names: [String]
+  # new additions
+  in_stock: Boolean!
+  phenotypes: [Phenotype]
+  genetic_modification: String
+  mutagenesis_method: String
+  characteristics: [String]
+  genotypes: [String]
+  vector: String # from old design - is this one still necessary?
 }
 
-type PlasmidProperties {
+type Phenotype {
+  phenotype: String # possibly [String]?
+  notes: String
+  dbxrefs: [String]
+  publications: [String]
+}
+
+type Plasmid {
+  id: ID!
+  created_at: Timestamp!
+  updated_at: Timestamp!
+  created_by: String!
+  updated_by: String!
+  summary: String # same as description field?
+  editable_summary: String
+  depositor: String
+  genes: [String]
+  dbxrefs: [String]
+  publications: [String]
+  # from plasmid_properties
   image_map: String
   sequence: String
+  # new additions
+  in_stock: Boolean!
+  keywords: [String]
+  genbank_accession: String
+  franke_database_id: String # from old design, still necessary?
+  additional_refs: [String] # from old design, still necessary?
 }
 
-type StockListWithCursor {
-  stocks: [Stock!]!
+type StrainListWithCursor {
+  strains: [Strain!]!
+  nextCursor: ID!
+  previousCursor: ID!
+  limit: Int
+  totalCount: Int!
+}
+
+type PlasmidListWithCursor {
+  plasmids: [Plasmid!]!
   nextCursor: ID!
   previousCursor: ID!
   limit: Int
@@ -64,7 +104,21 @@ input CreateStrainInput {
   genes: [String]
   dbxrefs: [String]
   publications: [String]
-  strain_properties: StrainProperties!
+  # from strain_properties
+  systematic_name: String!
+  descriptor: String!
+  species: String!
+  plasmid: String
+  parent: String
+  names: [String]
+  # new additions
+  in_stock: Boolean!
+  phenotypes: [Phenotype]
+  genetic_modification: String
+  mutagenesis_method: String
+  characteristics: [String]
+  genotypes: [String]
+  vector: String # from old design - is this one still necessary?
 }
 
 input CreatePlasmidInput {
@@ -77,10 +131,18 @@ input CreatePlasmidInput {
   genes: [String]
   dbxrefs: [String]
   publications: [String]
-  plasmid_properties: PlasmidProperties
+  # from plasmid_properties
+  image_map: String
+  sequence: String
+  # new additions
+  in_stock: Boolean!
+  keywords: [String]
+  genbank_accession: String
+  franke_database_id: String # from old design, still necessary?
+  additional_refs: [String] # from old design, still necessary?
 }
 
-input UpdateStockInput {
+input UpdateStrainInput {
   id: ID!
   updated_by: String!
   summary: String
@@ -89,6 +151,39 @@ input UpdateStockInput {
   genes: [String]
   dbxrefs: [String]
   publications: [String]
-  strain_properties: StrainProperties
-  plasmid_properties: PlasmidProperties
+  # from strain_properties
+  systematic_name: String!
+  descriptor: String!
+  species: String!
+  plasmid: String
+  parent: String
+  names: [String]
+  # new additions
+  in_stock: Boolean
+  phenotypes: [Phenotype]
+  genetic_modification: String
+  mutagenesis_method: String
+  characteristics: [String]
+  genotypes: [String]
+  vector: String # from old design - is this one still necessary?
+}
+
+input UpdatePlasmidInput {
+  id: ID!
+  updated_by: String!
+  summary: String
+  editable_summary: String
+  depositor: String
+  genes: [String]
+  dbxrefs: [String]
+  publications: [String]
+  # from plasmid_properties
+  image_map: String
+  sequence: String
+  # new additions
+  in_stock: Boolean
+  keywords: [String]
+  genbank_accession: String
+  franke_database_id: String # from old design, still necessary?
+  additional_refs: [String] # from old design, still necessary?
 }

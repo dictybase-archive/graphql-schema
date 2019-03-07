@@ -1,6 +1,6 @@
 type Query {
   order(id: ID!): Order
-  listOrders(next_cursor: ID, limit: Int): OrderListWithCursor
+  listOrders(cursor: ID, limit: Int, filter: String): OrderListWithCursor
 }
 
 type Mutation {
@@ -23,7 +23,7 @@ type Order {
   consumer: String
   payer: String
   purchaser: String
-  Items: [String]
+  items: [String]
 }
 
 type OrderListWithCursor {
@@ -44,7 +44,7 @@ input CreateOrderInput {
   consumer: String!
   payer: String!
   purchaser: String!
-  Items: [String]!
+  items: [String]!
 }
 
 input UpdateOrderInput {
@@ -54,5 +54,5 @@ input UpdateOrderInput {
   payment: String
   purchase_order_num: String
   status: String
-  Items: [String]
+  items: [String]
 }
